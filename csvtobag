@@ -12,17 +12,19 @@ for _, row in merged_df.iterrows():
     # Create a ROS message
     msg = String()
     
-    # Set the message data to the desired column value from the DataFrame
-    msg.data = str(row['column_name'])  # Replace 'column_name' with the actual column name in your DataFrame
-    
-    # Get the timestamp value from the DataFrame
-    timestamp = row['TIME']
-    
-    # Convert the timestamp to a rospy.Time object
-    time_obj = rospy.Time.from_sec(timestamp.timestamp())
-    
-    # Write the message to the bag file with a specified topic and timestamp
-    bag.write('topic_name', msg, time_obj)  # Replace 'topic_name' with your desired topic name
+    # Iterate over each column in the DataFrame
+    for column in merged_df.columns:
+        # Set the message data to the column value
+        msg.data = str(row[column])
+        
+        # Get the timestamp value from the DataFrame
+        timestamp = row['TIME']
+        
+        # Convert the timestamp to a rospy.Time object
+        time_obj = rospy.Time.from_sec(timestamp.timestamp())
+        
+        # Write the message to the bag file with a specified topic and timestamp
+        bag.write(column, msg, time_obj)  # Use the column name as the topic name
     
 # Close the bag file
 bag.close()
